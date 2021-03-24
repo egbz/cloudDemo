@@ -2,17 +2,17 @@ package org.egbz.clouddemo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 /**
  * @author egbz
  * @date 2021/3/24
  */
 @SpringBootApplication
-@EnableEurekaClient
-public class OrderMain80 {
+@EnableEurekaServer
+public class EurekaMain7001 {
     public static void main(String[] args) {
-        SpringApplication.run(OrderMain80.class, args);
-        System.out.println("hello 02");
+        SpringApplication.run(EurekaMain7001.class, args);
+        System.out.println("hi 43");
     }
 }
