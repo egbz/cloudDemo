@@ -1,6 +1,7 @@
 package org.egbz.clouddemo.controller;
 
 import com.netflix.discovery.converters.Auto;
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Slf4j
+@DefaultProperties(defaultFallback = "paymentGlobalFallbackMethod")
 public class OrderHystrixController {
 
     @Autowired
@@ -30,18 +32,22 @@ public class OrderHystrixController {
     }
 
     @GetMapping("/consumer/payment/hystrix/timeout/{id}")
-    @HystrixCommand(fallbackMethod = "paymentTimeOutFallbackMethod", commandProperties = {
-            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1500")
-    })
+//    @HystrixCommand(fallbackMethod = "paymentTimeOutFallbackMethod", commandProperties = {
+//            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1500")
+//    })
+    @HystrixCommand
     public String paymentInfo_TimeOut(@PathVariable("id") Integer id) {
+        id /= 0;   // 模拟 Exception
         String result = paymentHystrixService.paymentInfo_TimeOut(id);
-
-//        String result = null;
-//        id /= 0;   // 模拟 Exception
         return result;
     }
 
     public String paymentTimeOutFallbackMethod(@PathVariable("id") Integer id) {
         return "this is consumer80, the payment system is busy | throw Exception";
+    }
+
+    // 全局fallback方法
+    public String paymentGlobalFallbackMethod() {
+        return "[80] Global Exception handling";
     }
 }
