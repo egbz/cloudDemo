@@ -1,6 +1,8 @@
 package org.egbz.clouddemo.controller;
 
 import com.netflix.discovery.converters.Auto;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.egbz.clouddemo.entity.Payment;
 import org.egbz.clouddemo.service.PaymentHystrixService;
@@ -28,8 +30,18 @@ public class OrderHystrixController {
     }
 
     @GetMapping("/consumer/payment/hystrix/timeout/{id}")
+    @HystrixCommand(fallbackMethod = "paymentTimeOutFallbackMethod", commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1500")
+    })
     public String paymentInfo_TimeOut(@PathVariable("id") Integer id) {
         String result = paymentHystrixService.paymentInfo_TimeOut(id);
+
+//        String result = null;
+//        id /= 0;   // 模拟 Exception
         return result;
+    }
+
+    public String paymentTimeOutFallbackMethod(@PathVariable("id") Integer id) {
+        return "this is consumer80, the payment system is busy | throw Exception";
     }
 }
