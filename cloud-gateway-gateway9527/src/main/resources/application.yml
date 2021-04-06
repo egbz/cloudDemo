@@ -21,6 +21,9 @@ spring:
           uri: lb://cloud-payment-service
           predicates:
             - Path=/payment/lb/**
+#            - Header=X-Request-Id, \d+    # 请求头要有X-Request-Id属性  并且值为正数的正则表达式
+#            - After=2021-04-06T23:01:07.609807+08:00[Asia/Shanghai]
+#            - Cookie=username,egbz
 
 eureka:
   instance:
