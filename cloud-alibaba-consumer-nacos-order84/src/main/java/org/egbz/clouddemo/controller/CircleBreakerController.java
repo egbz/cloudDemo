@@ -5,7 +5,9 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
 import lombok.extern.slf4j.Slf4j;
 import org.egbz.clouddemo.entity.CommonResult;
 import org.egbz.clouddemo.entity.Payment;
+import org.egbz.clouddemo.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +24,9 @@ public class CircleBreakerController {
 
     @Autowired
     private RestTemplate rt;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @RequestMapping("/consumer/fallback/{id}")
 //    @SentinelResource(value = "fallback") // 没有配置
@@ -46,4 +51,11 @@ public class CircleBreakerController {
         Payment payment = new Payment(id, "null");
         return new CommonResult(445, "blockHandler-sentinel限流,  blockException " + blockException.getMessage());
     }
+
+    //---------------------------------OpenFeign
+    @RequestMapping(value = "/consumer/paymentSQL/{id}")
+    public CommonResult<Payment> paymentSQL(@PathVariable("id") Long id) {
+        return paymentService.paymentSQL(id);
+    }
+
 }
